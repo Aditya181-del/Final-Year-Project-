@@ -1,105 +1,61 @@
-# 🧠 Final Project Summary – **Banking Customer Churn Prediction Using Hard + Soft Data Fusion**
+# 🧠 Banking Customer Churn Prediction | Hard + Soft Data Fusion
 
-This project presents a robust, end-to-end **churn prediction framework** for the banking industry by combining:
+This project implements a powerful **churn prediction system** for the banking industry by combining **machine learning algorithms (hard data)** with **business-rule logic (soft data)**, inspired by the paper:
 
-👉 **Machine Learning models (Hard Data)**  
-👉 **Business Logic–driven insights (Soft Data)**
-
-📄 *Inspired by the research paper:*  
-**"Development of a Customer Churn Model for Banking Industry Based on Hard and Soft Data Fusion"**
+📄 *"Development of a Customer Churn Model for Banking Industry Based on Hard and Soft Data Fusion"*
 
 ---
 
-## 📍 **Workflow Overview**
+## 🚀 Project Highlights
+
+- ✅ End-to-end churn prediction pipeline (EDA → ML → Fusion → Dashboard)
+- ✅ Combines **quantitative (LMF)** and **qualitative (soft rules)** data
+- ✅ Real-time churn prediction using **Streamlit Web App**
+- ✅ Business-friendly segmentation: **Low / Medium / High Risk**
 
 ---
 
-### 🔹 1. Data Exploration & Cleaning
+## 📁 Files Included
 
-- Loaded the **banking customer churn dataset**
-- Handled:
-  - **Missing values**
-  - **Duplicate records**
-  - **Outliers** in `age`, `credit_score`, etc. using **IQR**
-- Performed **descriptive analysis** and correct **data typing**
-
----
-
-### 🔹 2. Exploratory Data Analysis (EDA)
-
-- Visualized patterns using:
-  - `histplot`, `boxplot`, `heatmap`, `barplot`
-- Discovered strong **churn indicators** like:
-  - Inactive membership  
-  - Low product usage  
-  - High balance with low engagement  
+| File / Folder | Description |
+|---------------|-------------|
+| `Banking_Customer_Churn_Project.ipynb` | Full Jupyter notebook pipeline |
+| `final_churn_fused.csv` | Final dataset with all engineered features |
+| `app.py` | Streamlit app for live churn prediction |
+| `.streamlit/config.toml` | Custom theme config for dark/luxury mode |
+| `README.md` | Project overview and documentation |
 
 ---
 
-### 🔹 3. Preprocessing
+## 🧱 ML Models (Supervised Learning)
 
-- **Encoded** categorical features (`gender`, `country`) using `LabelEncoder`
-- Applied `train_test_split`
-- Defined:
-  - `X` = input features  
-  - `y` = target (`churn`)  
+- Logistic Regression (`class_weight=balanced`)
+- Decision Tree (CART, C4.5, C5.0)
+- Random Forest (with `RandomizedSearchCV`)
+- CHAID-style Chi-Square scoring
 
----
-
-### 🔹 4. Supervised Machine Learning Models (Hard Data)
-
-Trained and evaluated several models:
-
-- ✅ **Logistic Regression**  
-- ✅ **Decision Tree** (CART, C4.5, C5.0 via XGBoost)  
-- ✅ **Random Forest** (Basic & Hyperparameter-Tuned)  
-- ✅ **Feature Selection** using Chi-Square (CHAID-style logic)
-
-📊 **Evaluation Metrics:**
+📌 Evaluated on:
 - Accuracy
-- F1-Score
-- ROC-AUC
-
-🎯 **Best Model:**  
-**Tuned Random Forest** via `RandomizedSearchCV` achieved **~86% AUC**
+- Precision, Recall, F1-score
+- AUC ROC
 
 ---
 
-### 🔹 5. Hard Data Fusion – **Latent Modeling Features (LMF)**
+## 🧩 Fusion Strategy
 
-- Selected behavioral indicators:  
-  `tenure`, `products_number`, `balance`
+### 🔸 Hard Data – LMF (Latent Modeling Features)
+- Features used: `tenure`, `products_number`, `balance`
+- Clustering: **KMeans (k=3)**
+- Output: `lfm_cluster`
 
-- Applied:
-  - `StandardScaler`  
-  - **K-Means clustering** (`k=3`)  
-  → Created `lfm_cluster`  
+### 🔸 Soft Data – Business Logic Rules
+Custom behavioral flags:
+- Low Trust (credit score < 550)
+- Dissatisfaction (inactive + short tenure)
+- Flight Risk (high salary, low balance)
 
----
+Output: `soft_score` (0 to 3)
 
-### 🔹 6. Soft Data – **Business Rule Modeling**
-
-Defined 3 behavioral churn flags:
-
-1. `low_trust_flag`: **credit score < 550**  
-2. `dissatisfied_flag`: **inactive & tenure < 3**  
-3. `flight_risk_flag`: **high salary but low balance**
-
-🎯 These were summed to form a **`soft_score`** (range: **0–3**)
-
----
-
-### 🔹 7. Fusion: Combining Hard + Soft Scores
-
-- **Normalized** both `lfm_cluster` and `soft_score` to 0–1 range
-- Calculated final churn risk score:
-
+### 🔸 Final Churn Risk Score
 ```python
-df['final_churn_risk_score'] = 0.5 * lfm_score_norm + 0.5 * soft_score_norm
-
---- 
-
-
-
-
-
+final_churn_risk_score = 0.5 * lfm_score_norm + 0.5 * soft_score_norm
